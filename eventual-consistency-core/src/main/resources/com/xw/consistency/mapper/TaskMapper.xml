@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xw.consistency.mapper.TaskMapper">
+
+    <insert id="insertTask">
+        insert into consistency_task (
+            task_id,
+            task_status,
+            execute_time,
+            parameter_types,
+            method_name,
+            method_signname,
+            execute_interval_seconds,
+            delay_seconds,
+            task_parameter,
+            created_time,
+            updated_time
+        ) values (
+            #{taskId},
+            #{taskStatus},
+            #{executeTime},
+            #{parameterTypes},
+            #{methodName},
+            #{methodSignname},
+            #{executeIntervalSeconds},
+            #{delaySeconds},
+            #{taskParameter},
+            now(),
+            now()
+        )
+    </insert>
+    <update id="turnOnTask">
+        update consistency_task
+        set
+            task_status = #{taskStatus},
+            execute_time = #{executeTime}
+        where id = #{id}
+    </update>
+
+    <resultMap type="com.xw.consistency.entity.ConsistencyTaskInstance" id="consistencyTaskInstanceMap">
+        <id property="id" column="id" />
+        <result property="taskId" column="task_id" />
+        <result property="taskStatus" column="task_status" />
+        <result property="executeTime" column="execute_time"/>
+        <result property="parameterTypes" column="parameter_types"/>
+        <result property="methodName" column="method_name"/>
+        <result property="methodSignname" column="method_signname"/>
+        <result property="executeIntervalSeconds" column="execute_interval_seconds"/>
+        <result property="delaySeconds" column="delay_seconds"/>
+        <result property="taskParameter" column="task_parameter"/>
+    </resultMap>
+    <select id="queryByStatus" resultMap="consistencyTaskInstanceMap">
+        select
+            id,
+            task_id,
+            task_status,
+            execute_time,
+            parameter_types,
+            method_name,
+            method_signname,
+            execute_interval_seconds,
+            delay_seconds,
+            task_parameter
+        from consistency_task
+        where task_status = #{status}
+    </select>
+
+</mapper>
